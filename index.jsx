@@ -1,22 +1,56 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  LineChart, 
-  ChevronRight, 
-  ChevronLeft,
-  Calculator, 
-  Activity, 
-  MousePointer2,
-  Maximize2,
-  RefreshCcw
-} from 'lucide-react';
+import React, { useState } from 'react';
 
 /**
- * Mathematical Utility Functions
- * We use a Lanczos approximation for the Gamma function to ensure the curve 
- * shown in the visualizer is mathematically accurate to the thesis.
+ * --- ICON COMPONENTS ---
+ * Inlined to make this file dependency-free (no 'lucide-react' required).
+ */
+const ActivityIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+  </svg>
+);
+
+const LineChartIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M3 3v18h18"/>
+    <path d="m19 9-5 5-4-4-3 3"/>
+  </svg>
+);
+
+const CalculatorIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect width="16" height="20" x="4" y="2" rx="2"/>
+    <line x1="8" x2="16" y1="6" y2="6"/>
+    <line x1="16" x2="16" y1="14" y2="18"/>
+  </svg>
+);
+
+const ChevronLeftIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="m15 18-6-6 6-6"/>
+  </svg>
+);
+
+const ChevronRightIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="m9 18 6-6-6-6"/>
+  </svg>
+);
+
+const Maximize2Icon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="15 3 21 3 21 9"/>
+    <polyline points="9 21 3 21 3 15"/>
+    <line x1="21" x2="14" y1="3" y2="10"/>
+    <line x1="3" x2="10" y1="21" y2="14"/>
+  </svg>
+);
+
+/**
+ * --- MATHEMATICAL UTILITY ---
+ * Lanczos approximation for log(Gamma(z))
  */
 const logGamma = (z: number): number => {
-  // Lanczos approximation coefficients
   const p = [
     676.5203681218851, -1259.1392167224028, 771.32342877765313,
     -176.61502916214059, 12.507343278686905, -0.13857109526572012,
@@ -34,26 +68,19 @@ const logGamma = (z: number): number => {
   return Math.log(Math.sqrt(2 * Math.PI)) + (z + 0.5) * Math.log(t) - t + Math.log(x);
 };
 
-// Calculate slope between two points on the log-gamma curve
-const getSlope = (x1: number, x2: number) => {
-  return (logGamma(x2) - logGamma(x1)) / (x2 - x1);
-};
-
 /**
- * Main Component
+ * --- MAIN COMPONENT ---
  */
 const BohrMollerupViz = () => {
   const [step, setStep] = useState(0);
   const [nVal, setNVal] = useState(2); // The integer 'n'
-  const [xOffset, setXOffset] = useState(0.5); // The 'x' in 'n+x'
+  const [xOffset] = useState(0.5); // The 'x' in 'n+x'
   
   // State for svg dimensions/scaling
   const width = 800;
   const height = 500;
-  const padding = 60;
   
   // Dynamic scaling based on current nVal to keep the view focused
-  // As n increases, y values grow rapidly, so we shift the view
   const centerX = nVal;
   const centerY = logGamma(nVal);
   
@@ -63,7 +90,6 @@ const BohrMollerupViz = () => {
   
   // Coordinate transformation: Data Space -> Screen Space
   const toScreen = (x: number, y: number) => {
-    // Center the view on (nVal, logGamma(nVal))
     const screenX = width / 2 + (x - centerX) * scaleX;
     const screenY = height / 2 - (y - centerY) * scaleY; // Invert Y
     return { x: screenX, y: screenY };
@@ -80,7 +106,6 @@ const BohrMollerupViz = () => {
   const slopeUpper = (pNext.y - pCurr.y) / (pNext.x - pCurr.x);
 
   // Calculate trap bounds at x = n + xOffset
-  // Lower bound line: y - y0 = m(x - x0) -> y = y0 + m(x - x0)
   const yLowerBound = pCurr.y + slopeLower * xOffset;
   const yUpperBound = pCurr.y + slopeUpper * xOffset;
   
@@ -143,7 +168,7 @@ const BohrMollerupViz = () => {
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <div className="bg-indigo-600 p-2 rounded-lg text-white">
-            <Activity className="w-5 h-5" />
+            <ActivityIcon className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Bohr-Mollerup Visualizer</h1>
@@ -188,7 +213,7 @@ const BohrMollerupViz = () => {
               <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5 mb-6 animation-fade-in">
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-sm font-bold text-indigo-900 flex items-center gap-2">
-                    <Maximize2 className="w-4 h-4" />
+                    <Maximize2Icon className="w-4 h-4" />
                     Increase n towards Infinity
                   </label>
                   <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-indigo-100 text-indigo-600">
@@ -224,7 +249,7 @@ const BohrMollerupViz = () => {
                 disabled={step === 0}
                 className="px-4 py-3 rounded-lg font-bold text-sm transition-all flex items-center gap-2 border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600"
               >
-                <ChevronLeft className="w-4 h-4" /> Back
+                <ChevronLeftIcon className="w-4 h-4" /> Back
               </button>
               <button 
                 onClick={() => setStep(Math.min(3, step + 1))}
@@ -232,7 +257,7 @@ const BohrMollerupViz = () => {
                 className="flex-1 px-4 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {step === 3 ? "Proof Visualized" : "Next Step"} 
-                {step !== 3 && <ChevronRight className="w-4 h-4" />}
+                {step !== 3 && <ChevronRightIcon className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -375,7 +400,7 @@ const BohrMollerupViz = () => {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-start gap-3">
              <div className="bg-blue-50 p-2 rounded-lg text-blue-600 mt-1">
-               <LineChart className="w-4 h-4" />
+               <LineChartIcon className="w-4 h-4" />
              </div>
              <div>
                <h4 className="font-bold text-slate-900 text-sm">Geometric Floor</h4>
@@ -384,7 +409,7 @@ const BohrMollerupViz = () => {
           </div>
           <div className="flex items-start gap-3">
              <div className="bg-red-50 p-2 rounded-lg text-red-600 mt-1">
-               <Activity className="w-4 h-4" />
+               <ActivityIcon className="w-4 h-4" />
              </div>
              <div>
                <h4 className="font-bold text-slate-900 text-sm">Geometric Ceiling</h4>
@@ -393,7 +418,7 @@ const BohrMollerupViz = () => {
           </div>
           <div className="flex items-start gap-3">
              <div className="bg-green-50 p-2 rounded-lg text-green-600 mt-1">
-               <Calculator className="w-4 h-4" />
+               <CalculatorIcon className="w-4 h-4" />
              </div>
              <div>
                <h4 className="font-bold text-slate-900 text-sm">Unique Limit</h4>
