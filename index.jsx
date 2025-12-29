@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 
 /**
  * --- ICON COMPONENTS ---
- * Inlined to make this file dependency-free (no 'lucide-react' required).
+ * Inlined to make this file dependency-free.
  */
-const ActivityIcon = ({ className }: { className?: string }) => (
+const ActivityIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
   </svg>
 );
 
-const LineChartIcon = ({ className }: { className?: string }) => (
+const LineChartIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M3 3v18h18"/>
     <path d="m19 9-5 5-4-4-3 3"/>
   </svg>
 );
 
-const CalculatorIcon = ({ className }: { className?: string }) => (
+const CalculatorIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <rect width="16" height="20" x="4" y="2" rx="2"/>
     <line x1="8" x2="16" y1="6" y2="6"/>
@@ -25,19 +25,19 @@ const CalculatorIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const ChevronLeftIcon = ({ className }: { className?: string }) => (
+const ChevronLeftIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="m15 18-6-6 6-6"/>
   </svg>
 );
 
-const ChevronRightIcon = ({ className }: { className?: string }) => (
+const ChevronRightIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="m9 18 6-6-6-6"/>
   </svg>
 );
 
-const Maximize2Icon = ({ className }: { className?: string }) => (
+const Maximize2Icon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <polyline points="15 3 21 3 21 9"/>
     <polyline points="9 21 3 21 3 15"/>
@@ -50,7 +50,7 @@ const Maximize2Icon = ({ className }: { className?: string }) => (
  * --- MATHEMATICAL UTILITY ---
  * Lanczos approximation for log(Gamma(z))
  */
-const logGamma = (z: number): number => {
+const logGamma = (z) => {
   const p = [
     676.5203681218851, -1259.1392167224028, 771.32342877765313,
     -176.61502916214059, 12.507343278686905, -0.13857109526572012,
@@ -89,7 +89,7 @@ const BohrMollerupViz = () => {
   const scaleY = 60;  // pixels per unit y
   
   // Coordinate transformation: Data Space -> Screen Space
-  const toScreen = (x: number, y: number) => {
+  const toScreen = (x, y) => {
     const screenX = width / 2 + (x - centerX) * scaleX;
     const screenY = height / 2 - (y - centerY) * scaleY; // Invert Y
     return { x: screenX, y: screenY };
